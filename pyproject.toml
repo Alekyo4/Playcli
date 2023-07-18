@@ -10,7 +10,6 @@ classifiers = [
     "Natural Language :: Portuguese (Brazilian)",
     "Environment :: Console",
     "Intended Audience :: Customer Service",
-    "License :: BeerWare",
     "Programming Language :: Python :: 3",
     "Topic :: Games/Entertainment"
 ]
