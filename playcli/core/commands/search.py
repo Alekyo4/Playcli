@@ -1,30 +1,40 @@
-from bs4 import BeautifulSoup
 from rich import print
 from rich.table import Table
 
-from playcli.core.web import scrap
-from playcli.values import BASE_URL
-from playcli.values import E_SEARCH as E
+from playcli.models import Driver, Platforms
 
 
-def call(q: str, page: int):
-    parse: BeautifulSoup = scrap(params={"q": q, "page": page})
-
+def call(q: str, page: int, platform: Platforms):
     table: Table = Table(box=None, expand=True)
 
     table.add_column("Title")
     table.add_column("Id", style="green", no_wrap=True)
 
-    for el in parse.select(E["card"]):
-        title: str = el.text
-        id: str = el["href"].replace(BASE_URL + "games/", "")  # type: ignore
+    match platform.value:
+        case "all":
+            for driver in platform:
+                print(f"[green]Searching in {driver.__class__.__name__}[/]")
 
-        if title in E["skip"]:  # ADS
-            continue
+                for game in driver.search(q, page):
+                    table.add_row(game.title, game.id + f"-{game.platform.lower()}")
+        case "recursive":
+            for driver in platform:
+                print(f"[green]Searching in {driver.__class__.__name__}[/]")
 
-        table.add_row(title, id)
+                for game in driver.search(q, page):
+                    table.add_row(game.title, game.id + f"-{game.platform.lower()}")
 
-    if table.row_count >= 1:
-        print(table)
+                if table.row_count != 0:
+                    print(f"[green]Results found...[/]")
+
+                    break
+        case _:
+            driver: Driver = platform.dv()
+
+            for game in driver.search(q, page):
+                table.add_row(game.title, game.id + f"-{game.platform.lower()}")
+
+    if table.row_count != 0:
+        print("\n", table)
     else:
-        print("No results were found.")
+        print("[red]No results were found.[/]")
