@@ -18,4 +18,7 @@ poetry install
 poetry run task test
 ```
 
-- [All Games](https://www.elamigos-games.com/)
+__Platforms:__
+
+- [ElAmigos](https://www.elamigos-games.com/)
+- [SteamUnlocked](https://steamunlocked.net/)
