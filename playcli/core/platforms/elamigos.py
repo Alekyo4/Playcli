@@ -9,7 +9,6 @@ class Elamigos(Driver):
 
     E: dict[str, dict] = {
         "search": {
-            "skip": ["Mortal Kombat 1 Online"],
             "card": ".card-title > a",
         }
     }
@@ -24,7 +23,7 @@ class Elamigos(Driver):
             title: str = el.text
             id: str = el["href"].replace(self.url + "games/", "")  # type: ignore
 
-            if title in E["skip"]:  # SKIP
+            if not id.startswith(self.url):
                 continue
 
             rs.append(GameSearch(id=id, title=title, platform=self.__class__.__name__))
