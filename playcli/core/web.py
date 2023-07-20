@@ -5,11 +5,16 @@ from rich import print
 from typer import Exit
 
 
-def scrap(url: str, router: list[str] = [], params: dict = {}) -> BeautifulSoup:
+def scrap(
+    url: str, router: list[str] = [], params: dict = {}, ex: bool = True
+) -> BeautifulSoup:
     res: Response = requests_get(url + "/".join(router), params=params)
 
     if res.status_code != 200:
-        print("[red]An error occurred while trying to communicate with the service.[/]")
+        if ex:
+            print(
+                "[red]An error occurred while trying to communicate with the service.[/]"
+            )
 
         raise Exit(code=1)
 

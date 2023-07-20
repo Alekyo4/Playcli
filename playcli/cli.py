@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from typer import Option, Typer
+from rich import print
+from typer import Exit, Option, Typer
 
 from playcli.core import commands as c
 from playcli.models.platforms import Platforms
@@ -20,3 +21,15 @@ def search(
     platform: Annotated[Platforms, Option()] = Platforms.RECURSIVE,
 ) -> None:
     c.search(" ".join(title), page, platform)
+
+
+@app.command(help="Game download links")
+def download(id: str) -> None:
+    f_ = Platforms.ALL.find(id)
+
+    if not f_:
+        print("[red]This id is invalid, or does not have a registered platform.[/]")
+
+        raise Exit(1)
+
+    c.download(*f_)

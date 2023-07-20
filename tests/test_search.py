@@ -9,13 +9,13 @@ runner: CliRunner = CliRunner()
 def test():
     result: Result = runner.invoke(app, ["search", "game"])
 
-    assert result.exit_code == 0 and result.stdout != "No results were found."
+    assert result.exit_code == 0 and result.stdout.find("No results were found") == -1
 
 
 def test_page():
     result: Result = runner.invoke(app, ["search", "game", "--page", "2"])
 
-    assert result.exit_code == 0 and result.stdout != "No results were found."
+    assert result.exit_code == 0 and result.stdout.find("No results were found") == -1
 
 
 def test_page_error():

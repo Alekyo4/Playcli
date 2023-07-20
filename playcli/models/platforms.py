@@ -17,6 +17,17 @@ class Platforms(str, Enum):
 
             yield self.dv(x)
 
+    def find(self, id: str) -> tuple[str, Driver] | None:
+        for driver in self.__iter__():
+            platform: str = "-" + driver.__class__.__name__.lower()
+
+            if id.endswith(platform):
+                id_ = len(id) - len(platform)
+
+                return (id[:id_], driver)
+
+        return None
+
     def dv(self, ps: str = "") -> Driver:
         try:
             return getattr(P, ps.capitalize() if ps else self.value.capitalize())()
