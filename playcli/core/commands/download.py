@@ -1,16 +1,18 @@
 from rich import print
 
-from playcli.models import Driver, Link
+from playcli.models import Driver, GameDownload
 
 
-def call(id: str, driver: Driver):
-    links: list[Link] = driver.download(id)
+def call(id_: str, driver: Driver):
+    download: GameDownload = driver.download(id_)
 
-    if not links:
+    if not download.target:
         print("[red]The game was not found[/]")
 
         return
 
-    for link in links:
+    print(f"[green]> {download.target}\n[/]")
+
+    for link in download.links:
         print(f"[green bold]{link.target}:[/]")
         print(link.url)

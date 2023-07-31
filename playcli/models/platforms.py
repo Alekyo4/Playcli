@@ -17,14 +17,14 @@ class Platforms(str, Enum):
 
             yield self.dv(x)
 
-    def find(self, id: str) -> tuple[str, Driver] | None:
+    def find(self, id_: str) -> tuple[str, Driver] | None:
         for driver in self.__iter__():
             platform: str = "-" + driver.__class__.__name__.lower()
 
-            if id.endswith(platform):
-                id_ = len(id) - len(platform)
+            if id_.endswith(platform):
+                i_ = len(id_) - len(platform)
 
-                return (id[:id_], driver)
+                return id_[:i_], driver
 
         return None
 

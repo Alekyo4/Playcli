@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from typer import Exit
 
 from playcli.core.web import scrap
-from playcli.models.driver import Driver, GameSearch, Link
+from playcli.models.driver import Driver, GameSearch, GameDownload, Link
 
 
 class Elamigos(Driver):
@@ -15,34 +15,36 @@ class Elamigos(Driver):
         },
     }
 
-    def download(self, id: str) -> list[Link]:
-        E: dict[str, str] = self.E["game"]
+    def download(self, id_: str) -> GameDownload:
+        eh: dict[str, str] = self.E["game"]
 
         try:
-            parse: BeautifulSoup = scrap(self.url, ["games", id], ex=False)
+            target: str = self.url + "/".join(["games", id_])
+
+            parse: BeautifulSoup = scrap(target, ex=False)
 
             links: list[Link] = []
 
-            for lk in parse.select(E["links"]):
+            for lk in parse.select(eh["links"]):
                 links.append(Link(target=lk.text, url=lk["href"]))  # type: ignore
 
-            return links
+            return GameDownload(target=target, links=links)
         except Exit:
-            return []
+            return GameDownload()
 
     def search(self, q: str, page: int) -> list[GameSearch]:
-        E: dict[str, str] = self.E["search"]
-        parse: BeautifulSoup = scrap(self.url, params={"q": q, "page": page})
+        eh: dict[str, str] = self.E["search"]
 
+        parse: BeautifulSoup = scrap(self.url, params={"q": q, "page": page})
         rs: list[GameSearch] = []
 
-        for el in parse.select(E["card"]):
+        for el in parse.select(eh["card"]):
             if not el["href"].startswith(self.url):  # type: ignore
                 continue
 
             title: str = el.text
-            id: str = el["href"].replace(self.url + "games/", "")  # type: ignore
+            id_: str = el["href"].replace(self.url + "games/", "")  # type: ignore
 
-            rs.append(GameSearch(id=id, title=title, platform=self.__class__.__name__))
+            rs.append(GameSearch(id_=id_, title=title, platform=self.__class__.__name__))
 
         return rs
