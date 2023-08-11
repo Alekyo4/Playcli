@@ -3,10 +3,15 @@
 Easily download and browse third-party games
 
 ## Run
-
 ```sh
 pip install playcli
+
 playcli search "The last of Us"
+playcli download the-last-of-us-part-i-deluxe-edition-pc-e-elamigos
+```
+Pipx:
+```sh
+pipx install playcli
 ```
 
 ## Source code
